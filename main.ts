@@ -19,6 +19,7 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     characterAnimations.rule(Predicate.MovingLeft)
     )
 })
+// --- CONTROLES ---
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (!(atacando)) {
         atacando = true
@@ -55,7 +56,7 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (true) {
         if (mySprite.isHittingTile(CollisionDirection.Bottom) && info.life() > 0) {
-            mySprite.setImage(assets.image`leo simple`)
+            mySprite.setImage(assets.image`miImagen`)
             mySprite.vy = -250
         }
     }
@@ -269,11 +270,12 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
     info.changeLifeBy(-1)
     pause(500)
 })
-let mirandoDerecha = true
-let atacando = false
 let projectile: Sprite = null
+let atacando = false
 let Tiburon: Sprite = null
 let mySprite: Sprite = null
+let mirandoDerecha = false
+mirandoDerecha = true
 scene.setBackgroundImage(img`
     6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
     6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
