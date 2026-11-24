@@ -3,7 +3,8 @@
     "description": "",
     "dependencies": {
         "device": "*",
-        "arcade-character-animations": "github:microsoft/arcade-character-animations#v0.1.0"
+        "arcade-character-animations": "github:microsoft/arcade-character-animations#v0.1.0",
+        "animation": "*"
     },
     "files": [
         "main.blocks",
