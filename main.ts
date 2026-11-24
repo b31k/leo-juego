@@ -686,7 +686,7 @@ forever(function () {
 })
 forever(function () {
     if (info.life() > 0) {
-        if (!(controller.anyButton.isPressed()) && mySprite.isHittingTile(CollisionDirection.Bottom)) {
+        if (!(atacando) && !(controller.anyButton.isPressed()) && mySprite.isHittingTile(CollisionDirection.Bottom)) {
             mySprite.setImage(assets.image`leo simple`)
         }
     }
