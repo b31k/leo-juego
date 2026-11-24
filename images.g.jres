@@ -44,11 +44,6 @@
         "mimeType": "image/x-mkcd-f4",
         "displayName": "daga"
     },
-    "image10": {
-        "data": "hwQQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-        "mimeType": "image/x-mkcd-f4",
-        "displayName": "roca"
-    },
     "anim5": {
         "namespace": "myAnimations",
         "id": "anim5",
