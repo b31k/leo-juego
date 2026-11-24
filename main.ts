@@ -20,30 +20,29 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     )
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (atacando) {
-        return
+    if (!(atacando)) {
+        atacando = true
+        characterAnimations.setCharacterAnimationsEnabled(mySprite, false)
+        if (mirandoDerecha) {
+            animation.runImageAnimation(
+            mySprite,
+            assets.animation`ataque`,
+            100,
+            false
+            )
+            pause(400)
+        } else {
+            animation.runImageAnimation(
+            mySprite,
+            assets.animation`ataque izq`,
+            100,
+            false
+            )
+            pause(400)
+        }
+        characterAnimations.setCharacterAnimationsEnabled(mySprite, true)
+        atacando = false
     }
-    atacando = true
-    characterAnimations.setCharacterAnimationsEnabled(mySprite, false)
-    if (mirandoDerecha) {
-        animation.runImageAnimation(
-        mySprite,
-        assets.animation`ataque`,
-        100,
-        false
-        )
-        pause(400)
-    } else {
-        animation.runImageAnimation(
-        mySprite,
-        assets.animation`ataque izq`,
-        100,
-        false
-        )
-        pause(400)
-    }
-    characterAnimations.setCharacterAnimationsEnabled(mySprite, true)
-    atacando = false
 })
 // Lanzar la daga hacia el lado correcto
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
