@@ -1,4 +1,8 @@
+scene.onOverlapTile(SpriteKind.Player, assets.tile`miMosaico1`, function (sprite, location) {
+    Tiburon.follow(mySprite)
+})
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
+    mirandoDerecha = true
     characterAnimations.loopFrames(
     mySprite,
     assets.animation`pixel leo dere`,
@@ -7,6 +11,7 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     )
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
+    mirandoDerecha = false
     characterAnimations.loopFrames(
     mySprite,
     assets.animation`pixel leo izq`,
@@ -14,13 +19,263 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     characterAnimations.rule(Predicate.MovingLeft)
     )
 })
-controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (mySprite.isHittingTile(CollisionDirection.Bottom)) {
-        mySprite.setImage(assets.image`miImagen`)
-        mySprite.vy = -250
+// --- CONTROLES ---
+controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (!(atacando)) {
+        atacando = true
+        characterAnimations.setCharacterAnimationsEnabled(mySprite, false)
+        if (mirandoDerecha) {
+            animation.runImageAnimation(
+            mySprite,
+            assets.animation`ataque`,
+            100,
+            false
+            )
+            pause(400)
+        } else {
+            animation.runImageAnimation(
+            mySprite,
+            assets.animation`ataque izq`,
+            100,
+            false
+            )
+            pause(400)
+        }
+        characterAnimations.setCharacterAnimationsEnabled(mySprite, true)
+        atacando = false
     }
 })
+// Lanzar la daga hacia el lado correcto
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (mirandoDerecha) {
+        projectile = sprites.createProjectileFromSprite(assets.image`daga`, mySprite, 200, 0)
+    } else {
+        projectile = sprites.createProjectileFromSprite(assets.image`daga`, mySprite, -200, 0)
+    }
+})
+controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (true) {
+        if (mySprite.isHittingTile(CollisionDirection.Bottom) && info.life() > 0) {
+            mySprite.setImage(assets.image`miImagen`)
+            mySprite.vy = -250
+        }
+    }
+})
+info.onLifeZero(function () {
+    sprites.destroy(Tiburon)
+    controller.moveSprite(mySprite, 0, 0)
+    animation.runImageAnimation(
+    mySprite,
+    [img`
+        . . f f f f f f f f f f . . . . 
+        . . f e e 2 2 2 2 2 2 f f . . . 
+        . f f e e 2 2 2 2 2 2 2 f f . . 
+        . f e e 2 2 2 e e e e e e f f . 
+        f f e e 2 2 2 2 2 2 2 2 2 2 2 . 
+        . f f f f f f d f f f f f f . . 
+        . f d f d f f d d f d d f f . . 
+        . f d d 1 8 d d d 8 1 d d f . . 
+        . f d d 1 8 d d d 8 1 d d f . . 
+        . . f d d d d d d d d d f . . . 
+        . . . f 6 6 4 4 4 6 6 f . . . . 
+        . f d d d 7 7 7 7 7 d d d f . . 
+        . f d e f 6 7 7 7 7 f e d f . . 
+        . . f f f 6 7 7 7 7 f f f . . . 
+        . . . f 8 c c c 8 c c f . . . . 
+        . . . f a b b b a b b f . . . . 
+        `,img`
+        . . f f f f f f f f f f . . . . 
+        . . f e e 2 2 2 2 2 2 f f . . . 
+        . f f e e 2 2 2 2 2 2 2 f f . . 
+        . f e e 2 2 2 e e e e e e f f . 
+        f f e e 2 2 2 2 2 2 2 2 2 2 2 . 
+        . f f f f 1 f d 1 f f f f f . . 
+        . f d 1 d f f d d 1 d d f f . . 
+        . f 1 d 1 8 d 1 d 8 1 d d f . . 
+        . f 1 d 1 8 1 1 d 8 1 d d f . . 
+        . . f d d d d 1 d d d d f . . . 
+        . . . f 6 6 4 4 4 6 6 f . . . . 
+        . f 1 d d 7 7 7 1 1 d d d f . . 
+        . f 1 e f 6 7 7 7 1 f e 1 f . . 
+        . . f f f 6 7 7 7 7 f f f . . . 
+        . . . f 1 c c 1 8 1 c f . . . . 
+        . . . f a b b 1 a b 1 f . . . . 
+        `,img`
+        . . f f f f f f f f f f . . . . 
+        . . f e e 2 2 2 2 2 2 f f . . . 
+        . f f e e 2 2 2 2 2 2 2 f f . . 
+        . f e e 2 2 2 e e e e e e f f . 
+        f f e e 2 2 2 2 2 2 2 2 2 2 2 . 
+        . f f f f 1 1 d 1 f f 1 f f . . 
+        . f d 1 d f f 1 d 1 1 d f f . . 
+        . f 1 d 1 8 d 1 d 8 1 d 1 f . . 
+        . f 1 d 1 8 1 1 1 8 1 d 1 f . . 
+        . . f d d f f f f 1 1 d f . . . 
+        . . . f 6 6 4 4 4 6 6 f . . . . 
+        . f 1 1 1 7 7 1 1 1 1 1 1 f . . 
+        . f 1 e f 6 1 7 7 1 f e 1 f . . 
+        . . f f f 1 7 1 7 7 f f f . . . 
+        . . . f 1 1 1 1 8 1 1 f . . . . 
+        . . . f 1 b b 1 a b 1 f . . . . 
+        `,img`
+        . . f f f f f f f f f f . . . . 
+        . . f e e 2 2 2 2 2 2 f f . . . 
+        . f f e e 2 2 2 2 2 2 2 f f . . 
+        . f e e 2 2 2 e e e e e e f f . 
+        f f e e 2 2 2 2 2 2 2 2 2 2 2 . 
+        . f f f f 1 1 1 1 f f 1 f f . . 
+        . f 1 1 1 f f 1 d 1 1 1 f f . . 
+        . f 1 d f f 1 1 d f f 1 1 f . . 
+        . f 1 1 f 8 1 1 1 8 f 1 1 f . . 
+        . . f 1 1 f f f f 1 1 d f . . . 
+        . . . f 1 1 1 1 4 6 6 f . . . . 
+        . f 1 1 1 1 7 1 1 1 1 1 1 f . . 
+        . f 1 e f 6 1 7 1 1 f e 1 f . . 
+        . . f f f 1 7 1 7 7 f f f . . . 
+        . . . f 1 1 1 1 8 1 1 f . . . . 
+        . . . f 1 b b 1 1 b 1 f . . . . 
+        `,img`
+        . . f f f f f f f f f f . . . . 
+        . . f e e 2 2 2 2 2 2 f f . . . 
+        . f f e e 2 2 2 2 2 2 2 f f . . 
+        . f e e 2 2 2 e e e e e e f f . 
+        f f e e 2 2 2 2 2 2 2 2 2 2 2 . 
+        . f 1 1 1 1 1 1 1 1 1 1 f f . . 
+        . f f 1 1 1 1 1 1 1 1 1 f f . . 
+        . f 1 1 f f 1 1 1 f f 1 1 f . . 
+        . f 1 1 f f 1 1 1 f f 1 1 f . . 
+        . . f 1 1 1 1 1 1 1 1 1 f . . . 
+        . . . f 1 f f f f f 1 f . . . . 
+        . f 1 1 1 1 1 1 1 1 1 1 1 f . . 
+        . f 1 f f f f 1 f f f f 1 f . . 
+        . . f f f 1 1 f 1 1 f f f . . . 
+        . . . f 1 1 1 1 1 1 1 f . . . . 
+        . . . f 1 f f 1 f f 1 f . . . . 
+        `,img`
+        . . f f f f f f f f f f . . . . 
+        . . f e e 2 2 2 2 2 2 f f . . . 
+        . f f e e 2 2 2 2 2 2 2 f f . . 
+        . f e e 2 2 2 e e e e e e f f . 
+        f f e e 2 2 2 2 2 2 2 2 2 2 2 . 
+        . f 1 1 1 1 1 1 1 1 1 1 f f . . 
+        . f f 1 1 1 1 1 1 1 1 1 f f . . 
+        . f 1 1 f f 1 1 1 f f 1 1 f . . 
+        . f 1 1 f f 1 1 1 f f 1 1 f . . 
+        . . f 1 1 1 1 1 1 1 1 1 f . . . 
+        . . . f 1 f f f f f 1 f . . . . 
+        . f 1 1 1 1 1 1 1 1 1 1 1 f . . 
+        . f 1 f . . . 1 f f f f 1 f . . 
+        . . f f f f f . 1 1 f f f . . . 
+        . . f f 1 1 f . 1 1 1 f . . . . 
+        . f 1 f 1 1 1 f f f 1 f . . . . 
+        `,img`
+        . . f f f f f f f f f f . . . . 
+        . . f e e 2 2 2 2 2 2 f f . . . 
+        . f f e e 2 2 2 2 2 2 2 f f . . 
+        . f e e 2 2 2 e e e e e e f f . 
+        f f e e 2 2 2 2 2 2 2 2 2 2 2 . 
+        . f 1 1 1 1 1 1 1 1 1 1 f f . . 
+        . f f 1 1 1 1 1 1 1 1 1 f f . . 
+        . f 1 1 f f 1 1 1 f f 1 1 f . . 
+        . f 1 1 f f 1 1 1 f f 1 1 f . . 
+        . . f 1 1 1 1 1 1 1 1 1 f . . . 
+        . . . f 1 f f f f f 1 f . . . . 
+        . f 1 1 1 1 1 1 1 1 1 1 1 f . . 
+        . f 1 f . . . 1 . . . . 1 f . . 
+        . . f f f f f . . f f f f . . . 
+        . . f f 1 1 f . . 1 1 1 1 f . . 
+        . f 1 f 1 1 1 f . f f 1 1 f . . 
+        `,img`
+        . . f f f f f f f f f f . . . . 
+        . . f e e 2 2 2 2 2 2 f f . . . 
+        . f f e e 2 2 2 2 2 2 2 f f . . 
+        . f e e 2 2 2 e e e e e e f f . 
+        f f e e 2 2 2 2 2 2 2 2 2 2 2 . 
+        . f 1 1 1 1 1 1 1 1 1 1 f f . . 
+        . f f 1 1 1 1 1 1 1 1 1 f f . . 
+        . f 1 1 f f 1 1 1 f f 1 1 f . . 
+        . f 1 1 f f 1 1 1 f f 1 1 f . . 
+        . . f 1 1 1 1 1 1 1 1 1 f . . . 
+        . . . f 1 f f f f f 1 f . . f . 
+        . f 1 1 1 1 . 1 1 . . . . . 1 f 
+        . f 1 f . . . 1 . . . . . . 1 f 
+        . . f f f f f . . f f f f f 1 1 
+        . . f f 1 1 f . . 1 1 1 1 f f 1 
+        . f 1 f 1 1 1 f . f f 1 1 f . f 
+        `,img`
+        . . f f f f f f f f f f . . . . 
+        . . f e e 2 2 2 2 2 2 f f . . . 
+        . f f e e 2 2 2 2 2 2 2 f f . . 
+        . f e e 2 2 2 e e e e e e f f . 
+        f f e e 2 2 2 2 2 2 2 2 2 2 2 . 
+        . f 1 1 1 1 1 1 1 1 1 1 f f . . 
+        . f f 1 1 1 1 1 1 1 1 1 f f . . 
+        . f 1 1 f f 1 1 1 f f 1 1 f . . 
+        . f 1 1 f f 1 1 1 f f 1 1 f . . 
+        . . f 1 1 1 1 1 1 1 1 1 f . . . 
+        . . . f 1 f f f f f 1 f . . f . 
+        f f . . . . . 1 1 . . . . . 1 f 
+        1 1 . f . . . 1 . . . . . . 1 f 
+        1 f f f f f f . . f f f f f 1 1 
+        1 . f f 1 1 f . . 1 1 1 1 f f 1 
+        f f 1 f 1 1 1 f . f f 1 1 f . f 
+        `,img`
+        . . . . . . . . . . . . . . . . 
+        . . f f f f f f f f f f . . . . 
+        . . f e e 2 2 2 2 2 2 f f . . . 
+        . f f e e 2 2 2 2 2 2 2 f f . . 
+        . f e e 2 2 2 e e e e e e f f . 
+        f f e e 2 2 2 2 2 2 2 2 2 2 2 . 
+        . f 1 1 1 1 1 1 1 1 1 1 f f . . 
+        . f f 1 1 1 1 1 1 1 1 1 f f . . 
+        . f 1 1 f f 1 1 1 f f 1 1 f . . 
+        . f 1 1 f f 1 1 1 f f 1 1 f . . 
+        . . f 1 1 1 1 1 1 1 1 1 f . . . 
+        f f . f 1 f f f f f 1 f . . f f 
+        1 1 . f . . . 1 . . . . . . 1 f 
+        1 f f f f f f . . f f f f f 1 1 
+        1 . f f 1 1 f . . 1 1 1 1 f f 1 
+        f f 1 f 1 1 1 f . f f 1 1 f . f 
+        `,img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . f f f f f f f f f f . . . . 
+        . . f e e 2 2 2 2 2 2 f f . . . 
+        . f f e e 2 2 2 2 2 2 2 f f . . 
+        . f e e 2 2 2 e e e e e e f f . 
+        f f e e 2 2 2 2 2 2 2 2 2 2 2 . 
+        . f 1 1 1 1 1 1 1 1 1 1 f f . . 
+        . f f 1 1 1 1 1 1 1 1 1 f f . . 
+        f f 1 1 f f 1 1 1 f f 1 1 f 1 f 
+        1 f 1 1 f f 1 1 1 f f 1 1 f 1 f 
+        1 f f 1 1 1 1 1 1 1 1 1 f f 1 1 
+        1 . f f 1 f f f f f 1 f 1 f f 1 
+        f f 1 f 1 1 1 f . f f 1 1 f . f 
+        `],
+    500,
+    false
+    )
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`transparency16`, function (sprite, location) {
+    Tiburon.unfollow()
+})
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.stairSouth, function (sprite, location) {
+    if (controller.up.isPressed()) {
+        mySprite.setVelocity(0, -100)
+    }
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    info.changeLifeBy(-1)
+    pause(500)
+})
+let projectile: Sprite = null
+let atacando = false
+let Tiburon: Sprite = null
 let mySprite: Sprite = null
+let mirandoDerecha = false
+mirandoDerecha = true
 scene.setBackgroundImage(img`
     6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
     6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
@@ -149,8 +404,290 @@ mySprite = sprites.create(assets.image`leo simple`, SpriteKind.Player)
 controller.moveSprite(mySprite, 100, 0)
 mySprite.ay = 500
 scene.cameraFollowSprite(mySprite)
+info.setLife(3)
+Tiburon = sprites.create(img`
+    .............ccfff..............
+    ...........ccddbcf..............
+    ..........ccddbbf...............
+    ..........fccbbcf...............
+    .....fffffccccccff.........ccc..
+    ...ffbbbbbbbcbbbbcfff....ccbbc..
+    ..fbbbbbbbbcbcbbbbcccff.cdbbc...
+    ffbbbbbbffbbcbcbbbcccccfcdbbf...
+    fbcbbb11ff1bcbbbbbcccccffbbf....
+    fbbb11111111bbbbbcccccccbbcf....
+    .fb11133cc11bbbbcccccccccccf....
+    ..fccc31c111bbbcccccbdbffbbcf...
+    ...fc13c111cbbbfcddddcc..fbbf...
+    ....fccc111fbdbbccdcc.....fbbf..
+    ........ccccfcdbbcc........fff..
+    .............fffff..............
+    `, SpriteKind.Enemy)
+Tiburon.setPosition(380, 370)
 forever(function () {
-    if (!(controller.anyButton.isPressed()) && mySprite.isHittingTile(CollisionDirection.Bottom)) {
-        mySprite.setImage(assets.image`leo simple`)
+    characterAnimations.loopFrames(
+    Tiburon,
+    [img`
+        ................................
+        ................................
+        ................................
+        .............fffff..............
+        ...........ff7768f..............
+        ..........ff7766f...............
+        ..........fff66ff...............
+        .....fffffffffffff.........fff..
+        ...ff6666666f66668fff....ff66f..
+        ..f666666668686666888ff.f766f...
+        ff666666f56686866688888f8766f...
+        f6c66611f516866666888888866f....
+        f66611111111666668888888668f....
+        .f6ffffff811666688888888888f....
+        ..fc1c131f1166688888676ff668f...
+        ....c131f118666887777ff..f66f...
+        ....ffff111f6766887ff.....f66f..
+        ........8888f8766ff........fff..
+        .............fffff..............
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        `,img`
+        ................................
+        ................................
+        .............88fff..............
+        ...........887768f..............
+        ..........887766f...............
+        ..........f88668f...............
+        .....fffff888888ff.........fff..
+        ...ff6666666866668fff....ff66f..
+        ..f666666668686666888ff.f766f...
+        ff666666f56686866688888ff766f...
+        f6f66611f51686666688888ff66f....
+        f66611111111666668888888668f....
+        .f611111111f666688888888888f....
+        ..f111fff1f166688888676ff66ff...
+        ...fff1f1ff8666f87777ff..f66f...
+        ....ff11111f6766887ff.....f66f..
+        ......fffffff876688........fff..
+        .............fffff..............
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        `,img`
+        ................................
+        ................................
+        ................................
+        .............88fff..............
+        ...........887768f..............
+        ..........887766f...............
+        ..........f88668f...............
+        .....fffff888888ff.........fff..
+        ...ff6666666866668fff....ff66f..
+        ..f666666668686666888ff.f766f...
+        ff666666f56686866688888ff766f...
+        f6866611f51686666688888ff66f....
+        f66611111111666668888888668f....
+        .fffffffff11666688888888888f....
+        ..131311f11166688888676ff668f...
+        ...1317f1118666f87777ff..f66f...
+        ....6f7f111f6766887ff.....f66f..
+        ........fffff876688........fff..
+        .............fffff..............
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        `,img`
+        ................................
+        ................................
+        ................................
+        ................................
+        .............fffff..............
+        ...........887768f..............
+        ..........887766f...............
+        ..........f88668f...............
+        .....fffff888888ff.........fff..
+        ...ff6666666866668fff....ff66f..
+        ..f666666668686666888ff.f766f...
+        ff666666556686866688888ff766f...
+        f6866611f51686666688888ff66f....
+        f66611111111666668888888668f....
+        .f61111f1f11666688888888888f....
+        ..fffff1f11166688888776ff668f...
+        ...f111f1118666f87777ff..f66f...
+        ....ffff111f6766887ff.....f66f..
+        ........fffff876688........fff..
+        .............fffff..............
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        `],
+    500,
+    characterAnimations.rule(Predicate.NotMoving)
+    )
+    characterAnimations.loopFrames(
+    Tiburon,
+    [img`
+        .............ccfff..............
+        ...........ccddbcf..............
+        ..........ccddbbf...............
+        ..........fccbbcf...............
+        .....fffffccccccff.........ccc..
+        ...ffbbbbbbbcbbbbcfff....ccbbc..
+        ..fbbbbbbbbcbcbbbbcccff.cdbbc...
+        ffbbbbbbffbbcbcbbbcccccfcdbbf...
+        fbcbbb11ff1bcbbbbbcccccffbbf....
+        fbbb11111111bbbbbcccccccbbcf....
+        .fb11133cc11bbbbcccccccccccf....
+        ..fccc31c111bbbcccccbdbffbbcf...
+        ...fc13c111cbbbfcddddcc..fbbf...
+        ....fccc111fbdbbccdcc.....fbbf..
+        ........ccccfcdbbcc........fff..
+        .............fffff..............
+        `,img`
+        .............ccfff..............
+        ............cddbbf..............
+        ...........cddbbf...............
+        ..........fccbbcf............ccc
+        ....ffffffccccccff.........ccbbc
+        ..ffbbbbbbbbbbbbbcfff.....cdbbc.
+        ffbbbbbbbbbcbcbbbbcccff..cddbbf.
+        fbcbbbbbffbbcbcbbbcccccfffdbbf..
+        fbbb1111ff1bcbcbbbcccccccbbbcf..
+        .fb11111111bbbbbbcccccccccbccf..
+        ..fccc33cc11bbbbccccccccfffbbcf.
+        ...fc131c111bbbcccccbdbc...fbbf.
+        ....f33c111cbbbfdddddcc.....fbbf
+        .....ff1111fbdbbfddcc........fff
+        .......cccccfbdbbfc.............
+        .............fffff..............
+        `,img`
+        ..............cfff..............
+        ............ccddbf..............
+        ...........cbddbff.........ccc..
+        ..........fccbbcf.........cbbc..
+        ...fffffffccccccff.......cdbc...
+        .ffcbbbbbbbbbbbbbcfff....cdbf...
+        fcbbbbbbbbbcbbbbbbcccff.cdbf....
+        fbcbbbbffbbbcbcbbbcccccffdcf....
+        fbb1111ffbbbcbcbbbccccccbbcf....
+        .fb11111111bbcbbbccccccccbbcf...
+        ..fccc33cb11bbbbcccccccfffbbf...
+        ...fc131c111bbbcccccbdbc..fbbf..
+        ....f33c111cbbccdddddbc....fff..
+        .....ff1111fdbbccddbcc..........
+        .......cccccfdbbbfcc............
+        .............fffff..............
+        `,img`
+        .............ccfff..............
+        ............cddbbf..............
+        ...........cddbbf...............
+        ..........fccbbcf............ccc
+        ....ffffffccccccff.........ccbbc
+        ..ffbbbbbbbbbbbbbcfff.....cdbbc.
+        ffbbbbbbbbbcbcbbbbcccff..cddbbf.
+        fbcbbbbbffbbcbcbbbcccccfffdbbf..
+        fbbb1111ff1bcbcbbbcccccccbbbcf..
+        .fb11111111bbbbbbcccccccccbccf..
+        ..fccc33cc11bbbbccccccccfffbbcf.
+        ...fc131c111bbbcccccbdbc...fbbf.
+        ....f33c111cbbbfdddddcc.....fbbf
+        .....ff1111fbdbbfddcc........fff
+        .......cccccfbdbbfc.............
+        .............fffff..............
+        `],
+    500,
+    characterAnimations.rule(Predicate.MovingLeft)
+    )
+    characterAnimations.loopFrames(
+    Tiburon,
+    [img`
+        ..............fffcc.............
+        ..............fcbddcc...........
+        ...............fbbddcc..........
+        ...............fcbbccf..........
+        ..ccc.........ffccccccfffff.....
+        ..cbbcc....fffcbbbbcbbbbbbbff...
+        ...cbbdc.ffcccbbbbcbcbbbbbbbbf..
+        ...fbbdcfcccccbbbcbcbbffbbbbbbff
+        ....fbbffcccccbbbbbcb1ff11bbbcbf
+        ....fcbbcccccccbbbbb11111111bbbf
+        ....fcccccccccccbbbb11cc33111bf.
+        ...fcbbffbdbcccccbbb111c13cccf..
+        ...fbbf..ccddddcfbbbc111c31cf...
+        ..fbbf.....ccdccbbdbf111cccf....
+        ..fff........ccbbdcfcccc........
+        ..............fffff.............
+        `,img`
+        ..............fffcc.............
+        ..............fbbddc............
+        ...............fbbddc...........
+        ccc............fcbbccf..........
+        cbbcc.........ffccccccffffff....
+        .cbbdc.....fffcbbbbbbbbbbbbbff..
+        .fbbddc..ffcccbbbbcbcbbbbbbbbbff
+        ..fbbdfffcccccbbbcbcbbffbbbbbcbf
+        ..fcbbbcccccccbbbcbcb1ff1111bbbf
+        ..fccbcccccccccbbbbbb11111111bf.
+        .fcbbfffccccccccbbbb11cc33cccf..
+        .fbbf...cbdbcccccbbb111c131cf...
+        fbbf.....ccdddddfbbbc111c33f....
+        fff........ccddfbbdbf1111ff.....
+        .............cfbbdbfccccc.......
+        ..............fffff.............
+        `,img`
+        ..............fffc..............
+        ..............fbddcc............
+        ..ccc.........ffbddbc...........
+        ..cbbc.........fcbbccf..........
+        ...cbdc.......ffccccccfffffff...
+        ...fbdc....fffcbbbbbbbbbbbbbcff.
+        ....fbdc.ffcccbbbbbbcbbbbbbbbbcf
+        ....fcdffcccccbbbcbcbbbffbbbbcbf
+        ....fcbbccccccbbbcbcbbbff1111bbf
+        ...fcbbccccccccbbbcbb11111111bf.
+        ...fbbfffcccccccbbbb11bc33cccf..
+        ..fbbf..cbdbcccccbbb111c131cf...
+        ..fff....cbdddddccbbc111c33f....
+        ..........ccbddccbbdf1111ff.....
+        ............ccfbbbdfccccc.......
+        ..............fffff.............
+        `,img`
+        ..............fffcc.............
+        ..............fbbddc............
+        ...............fbbddc...........
+        ccc............fcbbccf..........
+        cbbcc.........ffccccccffffff....
+        .cbbdc.....fffcbbbbbbbbbbbbbff..
+        .fbbddc..ffcccbbbbcbcbbbbbbbbbff
+        ..fbbdfffcccccbbbcbcbbffbbbbbcbf
+        ..fcbbbcccccccbbbcbcb1ff1111bbbf
+        ..fccbcccccccccbbbbbb11111111bf.
+        .fcbbfffccccccccbbbb11cc33cccf..
+        .fbbf...cbdbcccccbbb111c131cf...
+        fbbf.....ccdddddfbbbc111c33f....
+        fff........ccddfbbdbf1111ff.....
+        .............cfbbdbfccccc.......
+        ..............fffff.............
+        `],
+    500,
+    characterAnimations.rule(Predicate.MovingRight)
+    )
+})
+forever(function () {
+    if (info.life() > 0) {
+        if (!(controller.anyButton.isPressed()) && mySprite.isHittingTile(CollisionDirection.Bottom)) {
+            mySprite.setImage(assets.image`leo simple`)
+        }
     }
 })
