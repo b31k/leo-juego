@@ -20,30 +20,31 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     )
 })
 // --- CONTROLES ---
+// --- CONTROLES ---
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (!(atacando)) {
-        atacando = true
-        characterAnimations.setCharacterAnimationsEnabled(mySprite, false)
-        if (mirandoDerecha) {
-            animation.runImageAnimation(
-            mySprite,
-            assets.animation`ataque`,
-            100,
-            false
-            )
-            pause(400)
-        } else {
-            animation.runImageAnimation(
-            mySprite,
-            assets.animation`ataque izq`,
-            100,
-            false
-            )
-            pause(400)
-        }
-        characterAnimations.setCharacterAnimationsEnabled(mySprite, true)
-        atacando = false
+    if (atacando) {
+        return
     }
+    atacando = true
+    characterAnimations.setCharacterAnimationsEnabled(mySprite, false)
+    if (mirandoDerecha) {
+        animation.runImageAnimation(
+        mySprite,
+        assets.animation`ataque`,
+        100,
+        false
+        )
+        pause(400)
+    } else {
+        animation.runImageAnimation(
+        mySprite,
+        assets.animation`ataque izq`,
+        100,
+        false
+        )
+    }
+    characterAnimations.setCharacterAnimationsEnabled(mySprite, true)
+    atacando = false
 })
 // Lanzar la daga hacia el lado correcto
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -686,7 +687,7 @@ forever(function () {
 })
 forever(function () {
     if (info.life() > 0) {
-        if (!(controller.anyButton.isPressed()) && mySprite.isHittingTile(CollisionDirection.Bottom)) {
+        if (!(atacando) && !(controller.anyButton.isPressed()) && mySprite.isHittingTile(CollisionDirection.Bottom)) {
             mySprite.setImage(assets.image`leo simple`)
         }
     }
